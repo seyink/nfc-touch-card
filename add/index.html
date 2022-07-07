@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--Bootstrap v4.4.1 (https://getbootstrap.com/)-->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script type="text/javascript" src="//lib.sey.ink/jquery@2.1.4/jquery.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="//lib.sey.ink/layer-mobile@2.0/layer.js"></script>
+    <title>NFC名片网址生成</title>
+</head>
+
+<body onload="onload()">
+    <h3>NFC名片网址生成</h3>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-5 col-xs-12">
+                <form action="javascript:void(0);" autocomplete="off">
+                    <div class="form-group">
+                        <lable for="mz">称呼</lable>
+                        <input type="text" id="input" class="form-control" placeholder="花开富贵">
+                        <p style="color: red;">输入后请点击<input class="qr" type="button" id="btn" value="确定">否则无效</p>
+                        <select id="charset" style="display:none;">
+	                 	<!--<option value="gbk">gbk</option>
+	                  	<option value="big5">big5</option>-->
+	                  	<option value="utf-8">utf-8</option>
+	                    </select>
+                        <div>
+	                  	<textarea class="form-control" style="display: none" id="output" placeholder="请点击上方确认按钮" required ></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <lable for="sjh">电话号</lable>
+                        <input type="text" id="sjh" class="form-control" placeholder="152********" required />
+                    </div>
+                    <div class="form-group">
+                        <lable for="qq">QQ号</lable>
+                        <input type="text" id="qq" class="form-control" placeholder="67******" required />
+                    </div>
+                    <div class="form-group">
+                        <lable for="wx">微信号</lable>
+                        <input type="text" id="wx" class="form-control" placeholder="s******" required />
+                    </div>
+                    <!--<div class="form-group">
+                        <lable for="wyy">网易云ID</lable>
+                        <input type="text" id="wyy" class="form-control" placeholder="371874132" required />
+                        <a style="color: #007bff;" onclick="wyyjc()">点击此处查看帮助</a>
+                    </div>-->
+                    <div class="form-group">
+                        <lable for="dy">抖音链接(<span style="color: #dc3545;">没有请填0</span>)</lable>
+                        <input type="text" id="dy" class="form-control" placeholder="https://v.douyin.com/e****u/" required />
+                        <a style="color: #007bff;" onclick="dyjc()">点击此处查看帮助</a>
+                    </div>
+                    <div class="form-group">
+                        <lable for="ks">快手链接(<span style="color: #dc3545;">没有请填0</span>)</lable>
+                        <input type="text" id="ks" class="form-control" placeholder="https://v.kuaishou.com/ckp****P" required />
+                        <a style="color: #007bff;" onclick="ksjc()">点击此处查看帮助</a>
+                    </div>
+                    <div class="form-group">
+                        <lable for="img">底部图片URL</lable>
+                        <input type="text" id="img" class="form-control" placeholder="https://xx.xx/xx.png(*.png,*.jpg...)" required />
+                        <a href="https://up.sey.ink/upload.php" target="_blank">点此上传图片获取URL(上传成功后复制图片链接)</a>
+                    </div>
+                    <input type="submit" value="生成" class="btn btn-primary" onclick="generate()" />
+                    <!--<input type="button" value="缩短内容" class="btn btn-primary"  onclick="suo()" />-->
+                    <input type="button" value="QQ发送生成内容给Deer制作NFC" class="btn btn-primary"  onclick="fs()" />
+                </form>
+            </div>
+            <div class="col-sm-7 col-xs-12">
+                <textarea readonly="readonly" id="result" onchange="auto_grow(this)" oninput="auto_grow(this)" placeholder="https://nfc.sey.ink/?mz=%E8%8A%B1%E5%BC%80%E5%AF%8C%E8%B4%B5&sjh=152********&qq=67******&wx=s******&dy=https://v.douyin.com/e****u/&ks=https://v.kuaishou.com/ckp****P&img=https://xx.xx/xx.png"></textarea>
+            </div>
+        </div>
+    </div>
+    
+	<script>
+		/*
+		var s=document.createElement('script');
+		s.charset='gbk';
+		var src=document.getElementById('d').src;
+		alert(src);
+		s.src=src;
+		document.body.appendChild(s);
+		setTimeout(function(){
+			alert(window.a)
+		},300)
+		*/
+		function urlencode(str, charset, callback) {
+			//创建form通过accept-charset做encode
+			var form = document.createElement('form');
+			form.method = 'get';
+			form.style.display = 'none';
+			form.acceptCharset = charset;
+			if (document.all) {
+				//如果是IE那么就调用document.charset方法
+				window.oldCharset = document.charset;
+				document.charset = charset;
+			}
+			var input = document.createElement('input');
+			input.type = 'hidden';
+			input.name = 'str';
+			input.value = str;
+			form.appendChild(input);
+			form.target = '_urlEncode_iframe_';
+			document.body.appendChild(form);
+			//隐藏iframe截获提交的字符串
+			if (!window['_urlEncode_iframe_']) {
+				var iframe;
+				if(document.all){
+					try{
+						iframe = document.createElement('<iframe name="_urlEncode_iframe_"></iframe>');
+					}catch(e){
+						iframe = document.createElement('iframe');
+						//iframe.name = '_urlEncode_iframe_';
+						iframe.setAttribute('name', '_urlEncode_iframe_');
+					}
+				}else{
+					iframe = document.createElement('iframe');
+					//iframe.name = '_urlEncode_iframe_';
+					iframe.setAttribute('name', '_urlEncode_iframe_');
+				}
+				iframe.style.display = 'none';
+				iframe.width = "0";
+				iframe.height = "0";
+				iframe.scrolling = "no";
+				iframe.allowtransparency = "true";
+				iframe.frameborder = "0";
+				iframe.src = 'about:blank';
+				document.body.appendChild(iframe);
+			}
+			//
+			window._urlEncode_iframe_callback = function(str) {
+				callback(str);
+				if (document.all) {
+					document.charset = window.oldCharset;
+				}
+			}
+			//设置回调编码页面的地址，这里需要用户修改
+			form.action = 'getEncodeStr.html';
+			form.submit();
+			setTimeout(function() {
+				form.parentNode.removeChild(form);
+				iframe.parentNode.removeChild(iframe);
+			}, 500)
+
+		}
+		function urldecode(str, charset, callback) {
+			var script = document.createElement('script');
+			script.id = '_urlDecodeFn_';
+			window._urlDecodeFn_ = callback;
+			if (document.all) {
+				if(navigator.userAgent.indexOf('MSIE 8')>-1){
+					//对于ie8做特别hack
+					var link = document.createElement('link');
+					link.rel = 'stylesheet';
+					link.type = 'text/css';
+					link.charset = charset;
+					link.href = 'data:text/plain;charset=' + charset + ',%23_decode_hidden_el_for_test_%7Bbackground-image%3Aurl(' + str + ')%7D';
+					alert(link.href);
+					document.body.appendChild(link);
+					//然后创建一个隐藏的div，应用这个样式
+					var div = document.createElement('div');
+					div.id = '_decode_hidden_el_for_test_';
+					div.style.display = 'none';
+					document.body.appendChild(div);
+					setTimeout(function(){
+						callback(document.getElementById('_decode_hidden_el_for_test_').currentStyle['backgroundImage'].match(/\("data\:text\/(.+)"\)/)[1]);
+						link.parentNode.removeChild(link);
+						div.parentNode.removeChild(div);
+					}, 300)
+				}else{
+					//隐藏iframe截获提交的字符串
+					if (!window['_urlDecode_iframe_']) {
+						var iframe;
+						if(document.all){
+							try{
+								iframe = document.createElement('<iframe name="_urlDecode_iframe_"></iframe>');
+							}catch(e){
+								iframe = document.createElement('iframe');
+								//iframe.name = '_urlDecode_iframe_';
+								iframe.setAttribute('name', '_urlDecode_iframe_');
+							}
+						}else{
+							iframe = document.createElement('iframe');
+							//iframe.name = '_urlDecode_iframe_';
+							iframe.setAttribute('name', '_urlDecode_iframe_');
+						}
+						//iframe.name = '_urlDecode_iframe_';
+						iframe.setAttribute('name', '_urlDecode_iframe_');
+						iframe.style.display = 'none';
+						iframe.width = "0";
+						iframe.height = "0";
+						iframe.scrolling = "no";
+						iframe.allowtransparency = "true";
+						iframe.frameborder = "0";
+						iframe.src = 'about:blank';
+						document.body.appendChild(iframe);
+					}
+					//ie下需要指明charset，然后src=datauri才可以
+					iframe.contentWindow.document.write('<html><scrip' + 't charset="gbk" src="data:text/javascript;charset=gbk,parent._decodeStr_=\'' + str + '\'"></s'+'cript></html>');
+					setTimeout(function() {
+						callback(_decodeStr_);
+						iframe.parentNode.removeChild(iframe);
+					}, 300)
+				}
+			} else {
+				var src = 'data:text/javascript;charset=' + charset + ',_urlDecodeFn_("' + str + '");';
+				src += 'document.getElementById("_urlDecodeFn_").parentNode.removeChild(document.getElementById("_urlDecodeFn_"));';
+				script.src = src;
+				document.body.appendChild(script);
+			}
+		}
+
+		/**编码和解码
+		 */
+		document.getElementById('btn').onclick = function() {
+			zhmzy = document.getElementById("input").value;
+            if (zhmzy.length == 0 ) {
+            layer.open({
+                      content: '请填写称呼后再确认！'
+                      ,time: 2
+                      ,skin: 'msg'
+            });
+            return;
+            }else {
+            urlencode(document.getElementById('input').value, document.getElementById('charset').value, function(str) {
+            document.getElementById('output').value = str;
+				layer.open({
+                      content: '名称已确定，若修改需要再次确认！！'
+                      ,time: 2
+                      ,skin: 'msg'
+                });
+               })
+			}
+		}
+	</script>
+</body>
+</html>

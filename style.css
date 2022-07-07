@@ -1,0 +1,66 @@
+body {
+    font: normal 100% Helvetica, Arial,sans-serif;
+}
+.list {
+    margin: 25px 0 0;
+    padding: 3px 0;
+    text-align: center;
+    /*display: inline-block;*/
+}
+.list a {
+    padding: 10px 55px;
+    border: 2px solid #060606;
+    margin: 5px;
+    box-shadow: 2px 4px 5px #000;
+    border-radius: 100px;
+    text-decoration: none;
+}
+.head input {
+    text-align: center;
+    width: 100%;
+    margin: 40px 0 15px 0;
+    font-size:30px;
+    BORDER-TOP-STYLE: none;
+    BORDER-RIGHT-STYLE: none;
+    BORDER-LEFT-STYLE: none;
+    BORDER-BOTTOM-STYLE: solid;
+}
+.img {
+    text-align: center;
+    margin: 40px 0 15px 0;
+}
+.img img {
+    display: inline-block;
+    height: auto;
+    max-width: 100%;
+    box-shadow: 2px 4px 5px #000;
+}
+.ss {
+    text-align: center;
+    margin: 40px 0 15px 0;
+}
+*{
+	padding:0px;
+	/*margin:0px;
+	background:#333;
+	color:#fff;
+	font-size:30px;*/
+}
+/*下面两个是核心样式*/
+.beat-char {
+    line-height: 3.4em;
+    position: relative;
+	display: inline-block;
+	background: transparent;
+
+}
+
+.rotate{
+	transform:rotate(360deg) ;
+	-ms-transform:rotate(360deg); 	/* IE 9 */
+	-moz-transform:rotate(360deg); 	/* Firefox */
+	-webkit-transform:rotate(360deg); /* Safari 和 Chrome */
+	-o-transform:rotate(360deg);
+	-webkit-transition-duration: 0.7s;
+
+}

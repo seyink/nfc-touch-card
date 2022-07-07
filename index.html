@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+ <head>
+   <meta http-equiv="content-type" content="text/html; charset=utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
+   <title>NFC名片</title>
+   <link href="./style.css" rel="stylesheet">
+   <link rel="stylesheet" href="//lib.sey.ink/font-awesome@4.7.0/css/font-awesome.min.css">
+ </head>
+<body>
+
+   <div class="head">
+     <input id="mz" type="text" readOnly="true" value="正在加载...">
+   </div>
+   
+   <div class="list">
+      <a id="sjh" href="" style="color:#1cac9f"><i class="fa fa-volume-control-phone" aria-hidden="true"> 添加到通讯录</i></a>
+   </div>
+   
+   <div class="list">
+      <a id="qqurl" href="" style="color:#1a40ff"><i class="fa fa-qq" aria-hidden="true"> 添加QQ好友</i></a>
+   </div>
+  
+   <div class="list" id="wx" onclick="copywx()" data-clipboard-text="">
+      <a style="color:#36ca2d"><i class="fa fa-weixin" aria-hidden="true"> 添加微信好友</i></a>
+   </div>
+   
+   <!--<div class="list">
+      <a id="wyy" href="" style="color:#ff1a1a"><i class="fa fa-music" aria-hidden="true"> 去TA的网易云</i></a>
+   </div>-->
+   
+   <div class="list">
+      <a id="dy" href="" style="color:#1cac9f"><i class="fa fa-street-view" aria-hidden="true"> 去看TA的抖音</i></a>
+   </div>
+   
+   <div class="list">
+      <a id="ks" href="" style="color:#aca81c"><i class="fa fa-street-view" aria-hidden="true"> 去看TA的快手</i></a>
+   </div>
+   
+   <div class="img">
+   <span><i class="fa fa-hand-spock-o" aria-hidden="true"></i>
+   <i class="fa fa-smile-o" aria-hidden="true"></i>
+   <i class="fa fa-hand-spock-o" aria-hidden="true"></i></span><br>
+   <img src="" id="img" alt="个人照片" onerror="this.src='../none.png'"/>
+   </div>
+   
+   <p id="db" class="ss">···到底啦···</p>
+   
+<script type="text/javascript" src="//lib.sey.ink/jquery@2.1.4/jquery.min.js"></script>
+<script type="text/javascript" src="/jquery.beattext.js"></script>
+<script type="text/javascript" src="/easying.js"></script>
+
+<!--微信复制部分-->
+<!--<script src="//lib.sey.ink/layer@3.3.0/layer.js"></script>-->
+<script src="//lib.sey.ink/layer-mobile@2.0/layer.js"></script>
+<script src="//lib.sey.ink/clipboard@2.0.8/clipboard.min.js"></script>
+<script type="text/javascript">
+    function copywx() {
+      new ClipboardJS('.list');
+      layer.open({
+                        content: '微信号复制成功,请手动添加,正在唤起..'
+                        ,time: 2
+                        ,skin: 'msg'
+      });
+      setTimeout(function(){ window.location='weixin://'; }, 1000);
+    }
+</script>
+
+<!--获取url参数以及QQ按钮-->
+<script type="text/javascript">
+    var str = window.location.search;
+    function getQueryStringArgs(q){
+        var qs = q.split('?')[1] || (location.search.length > 0 ? location.search.substring(1) : ''),
+                args = {},
+                items = qs.length ? qs.split('&') : [],
+                item = null,
+                name = null,
+                value = null,
+                i = 0,
+                len = items.length;
+
+        for(i = 0; i < len; i++){
+            item = items[i].split('=');
+            name = decodeURIComponent(item[0]);
+            value = decodeURIComponent(item[1]);
+            if(name.length){
+                args[name] = value;
+            }
+        }
+        return args;
+    }
+    var r = getQueryStringArgs(str);
+    $('#sjh').attr('href','tel:'+r.sjh);
+    $('#qqurl').attr('href','mqqwpa://im/chat?chat_type=wpa&uin='+r.qq+'&version=1&src_type=web&web_src=baidu.com');
+    $('#wx').attr('data-clipboard-text',r.wx);
+    $('#mz').val(r.mz);
+    $('#wyy').attr('href','https://y.music.163.com/m/user?id='+r.wyy);
+    $('#dy').attr('href',r.dy);
+    $('#ks').attr('href',r.ks);
+    $('#img').attr('src',r.img);
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+$('p#db').beatText({isAuth:true,beatHeight:"3em",isRotate:false});
+});
+</script>
+</body>
+</html>
